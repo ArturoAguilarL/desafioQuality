@@ -15,7 +15,7 @@ public class HotelDTO {
     private String city;
     private String roomType;
     private Double nightPrice;
-    private String dateTo;
-    private String dateFrom;
+    private Date dateTo;
+    private Date dateFrom;
     private Boolean reserved;
 }

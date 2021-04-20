@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HotelValidator {
+public class HotelUtils {
     private static String emailPatternValidation = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
@@ -96,16 +96,50 @@ public class HotelValidator {
         return false;
     }
 
+    /*
     public static void validatePayment(PaymentDTO paymentMethod) {
        return;
-    }
+    }*/
 
 
-    public static Integer getPriceByAmountOfDays(String dateFrom, String dateTo) throws ParseException {
+    public static Integer getDaysByDates(String dateFrom, String dateTo) throws ParseException {
         //El repository no deberia lanzar un exp de parseo
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dateFrom);
         Date date2 = new SimpleDateFormat("dd/MM/yyyy").parse(dateTo);
         long diff = date2.getTime() - date1.getTime();
         return Math.toIntExact((TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)));
+    }
+
+    public static Double calculateInterest(PaymentDTO paymentMethod) {
+        Double result = 0.0;
+        switch (paymentMethod.getType()){
+            case "CREDIT":
+                result = processCreditCardInterest(paymentMethod);
+                return result;
+            case "DEBIT":
+                return result;
+            default:
+                //Excepcion
+        }
+        return result;
+    }
+
+    public static Double processCreditCardInterest(PaymentDTO paymentMethod) {
+        int dues = paymentMethod.getDues();
+        if (dues == 1) {
+            return 0.0;
+        } else if (dues == 2 | dues == 3) {
+            return 0.05;
+        } else if (dues >= 4 & dues <= 6) {
+            return 0.1;
+        } else if (dues >= 7 & dues <= 9) {
+            return 0.15;
+        } else if (dues >= 10 & dues <= 12) {
+            return 0.2;
+        } else{
+            //Excepcion
+            return 0.0;
+        }
+
     }
 }

@@ -10,4 +10,8 @@ import lombok.Setter;
 public class StatusDTO {
     private Integer code;
     private String message;
+
+    public StatusDTO() {
+
+    }
 }

@@ -1,2 +1,12 @@
-package com.example.demo.dto;public class HotelPayloadDTO {
+package com.example.demo.dto;
+
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class HotelPayloadDTO {
+    private String userName;
+    private BookingDTO booking;
 }

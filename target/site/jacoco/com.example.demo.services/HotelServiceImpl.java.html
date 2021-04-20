@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HotelServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.example.demo.services</a> &gt; <span class="el_source">HotelServiceImpl.java</span></div><h1>HotelServiceImpl.java</h1><pre class="source lang-java linenums">package com.example.demo.services;
+
+
+import com.example.demo.dto.HotelDTO;
+import com.example.demo.dto.HotelParamDTO;
+import com.example.demo.dto.HotelPayloadDTO;
+import com.example.demo.dto.HotelResponsePayloadDTO;
+import com.example.demo.exceptions.CheckInGreaterThanCheckOutException;
+import com.example.demo.exceptions.CheckOutBeforeCheckInException;
+import com.example.demo.exceptions.DateFormatInvalidException;
+import com.example.demo.exceptions.DestinationNoExistsException;
+import com.example.demo.repositories.HotelRepository;
+import com.example.demo.utils.DateUtils;
+import com.example.demo.utils.HotelValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+@Service
+<span class="fc" id="L29">public class HotelServiceImpl implements HotelService {</span>
+
+    @Autowired
+    HotelRepository hotelRepository;
+
+    @Override
+    public List&lt;HotelDTO&gt; getHotels(String dateFrom, String dateTo, String destination) throws DestinationNoExistsException, CheckInGreaterThanCheckOutException, DateFormatInvalidException, CheckOutBeforeCheckInException {
+<span class="nc" id="L36">        Date dateF = null;</span>
+<span class="nc" id="L37">        Date dateT = null;</span>
+<span class="nc bnc" id="L38" title="All 6 branches missed.">        if(dateFrom == null &amp;&amp; dateTo == null &amp;&amp; destination == null){</span>
+<span class="nc" id="L39">            System.out.println(&quot;No tiene filtros&quot;);</span>
+<span class="nc" id="L40">            return hotelRepository.getAllHotels();</span>
+        }
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if(dateFrom != null){</span>
+<span class="nc" id="L43">            dateF = DateUtils.convertStringToDate(dateFrom);</span>
+        }
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if(dateTo != null){</span>
+<span class="nc" id="L46">            dateT = DateUtils.convertStringToDate(dateTo);</span>
+        }
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if(destination != null){</span>
+<span class="nc" id="L49">            validateDestinationParam(destination);</span>
+        }
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if(HotelValidator.validateDatesInOrder(dateF,dateT)){</span>
+<span class="nc" id="L52">            return hotelRepository.getHotels(dateF,dateT,destination);</span>
+        }
+<span class="nc" id="L54">        return null;</span>
+    }
+
+    @Override
+    public HotelResponsePayloadDTO booking(HotelPayloadDTO payload) {
+<span class="nc" id="L59">        return null;</span>
+    }
+
+    private boolean validateDatesInOrder(Date dateF, Date dateT) throws CheckInGreaterThanCheckOutException, CheckOutBeforeCheckInException {
+<span class="nc" id="L63">        boolean result = false;</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if(dateF.before(dateT)){</span>
+<span class="nc" id="L65">            result = true;</span>
+        } else
+<span class="nc" id="L67">            throw new CheckInGreaterThanCheckOutException();</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if(!dateT.before(dateT)){</span>
+<span class="nc" id="L69">            result = true;</span>
+        } else
+<span class="nc" id="L71">            throw new CheckOutBeforeCheckInException();</span>
+<span class="nc" id="L72">        return result;</span>
+    }
+
+    private void validateDestinationParam(String dest) throws DestinationNoExistsException {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if(hotelRepository.destinationExists(dest)){</span>
+<span class="nc" id="L77">            System.out.println(&quot;Existe el destino&quot;);</span>
+<span class="nc" id="L78">            return;</span>
+        }else{
+<span class="nc" id="L80">            throw new DestinationNoExistsException();</span>
+        }
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

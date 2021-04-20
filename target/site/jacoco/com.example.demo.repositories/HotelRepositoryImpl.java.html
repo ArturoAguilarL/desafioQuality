@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HotelRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.example.demo.repositories</a> &gt; <span class="el_source">HotelRepositoryImpl.java</span></div><h1>HotelRepositoryImpl.java</h1><pre class="source lang-java linenums">package com.example.demo.repositories;
+
+import com.example.demo.dto.HotelDTO;
+import com.example.demo.dto.HotelParamDTO;
+import com.example.demo.utils.Utils;
+import org.springframework.stereotype.Repository;
+
+import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+@Repository
+public class HotelRepositoryImpl implements HotelRepository{
+<span class="fc" id="L16">    private static String filePathHotels = &quot;src/main/resources/dbHotels.csv&quot;;</span>
+    private static Map&lt;String, Integer&gt;  destinations;
+    List&lt;HotelDTO&gt; hotels;
+
+<span class="fc" id="L20">    public HotelRepositoryImpl(){</span>
+<span class="fc" id="L21">        this.hotels = parseHotelCSV(filePathHotels);</span>
+<span class="fc" id="L22">        this.destinations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L23">    }</span>
+
+    @Override
+    public List&lt;HotelDTO&gt; getHotels(Date dateFrom, Date dateTo, String destination) {
+<span class="nc" id="L27">        List&lt;HotelDTO&gt; hotelsListCopy = new ArrayList&lt;&gt;(this.hotels);</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        hotelsListCopy.removeIf(p -&gt; !p.getCity().equals(destination));</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        hotelsListCopy.removeIf(p -&gt; !(p.getDateFrom().before(dateFrom) | p.getDateFrom().equals(dateFrom)));</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        hotelsListCopy.removeIf(p -&gt; !(p.getDateTo().after(dateTo) | p.getDateTo().equals(dateTo)));</span>
+<span class="nc" id="L31">        return hotelsListCopy;</span>
+    }
+
+    @Override
+    public List&lt;HotelDTO&gt; getAllHotels() {
+        //List&lt;HotelDTO&gt; hotelsListCopy = new ArrayList&lt;&gt;(this.hotels);
+<span class="nc" id="L37">        return this.hotels;</span>
+    }
+
+    @Override
+    public boolean destinationExists(String destination) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for(HotelDTO h : hotels){</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if(h.getCity().equals(destination)){</span>
+<span class="fc" id="L44">                return true;</span>
+            }
+<span class="fc" id="L46">        }</span>
+<span class="fc" id="L47">        return false;</span>
+    }
+
+    public static List&lt;HotelDTO&gt; parseHotelCSV(String path){
+<span class="fc" id="L51">        String splitBy = &quot;,&quot;;</span>
+<span class="fc" id="L52">        String line = &quot;&quot;;</span>
+<span class="fc" id="L53">        Integer contId = 1;</span>
+<span class="fc" id="L54">        Integer value = 0;</span>
+<span class="fc" id="L55">        List&lt;HotelDTO&gt; hotels = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc" id="L57">            BufferedReader br = new BufferedReader(new FileReader(path));</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            while((line = br.readLine()) != null) {</span>
+<span class="fc" id="L59">                String[] pr = line.split(splitBy);</span>
+<span class="fc" id="L60">                HotelDTO hotel = new HotelDTO();</span>
+<span class="fc" id="L61">                hotel.setId(contId++);</span>
+<span class="fc" id="L62">                hotel.setCodeHotel(pr[0]);</span>
+<span class="fc" id="L63">                hotel.setName(pr[1]);</span>
+<span class="fc" id="L64">                hotel.setCity(pr[2]);</span>
+<span class="fc" id="L65">                hotel.setRoomType(pr[3]);</span>
+<span class="fc" id="L66">                hotel.setNightPrice(Double.valueOf(Utils.cleanPrice(pr[4])));</span>
+<span class="fc" id="L67">                DateFormat dateFormat = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;, Locale.US);</span>
+<span class="fc" id="L68">                hotel.setDateFrom(dateFormat.parse(pr[5]));</span>
+<span class="fc" id="L69">                hotel.setDateTo(dateFormat.parse(pr[6]));</span>
+<span class="fc" id="L70">                hotel.setReserved(pr[7].equals(&quot;SI&quot;));</span>
+<span class="fc" id="L71">                hotels.add(hotel);</span>
+
+<span class="fc" id="L73">            }</span>
+<span class="fc" id="L74">            br.close();</span>
+<span class="fc" id="L75">            return hotels;</span>
+        }
+<span class="nc" id="L77">        catch (FileNotFoundException e) {</span>
+<span class="nc" id="L78">            e.printStackTrace();</span>
+<span class="nc" id="L79">        } catch (IOException e) {</span>
+<span class="nc" id="L80">            e.printStackTrace();</span>
+<span class="nc" id="L81">        } catch (ParseException e) {</span>
+<span class="nc" id="L82">            e.printStackTrace();</span>
+<span class="nc" id="L83">        }</span>
+<span class="nc" id="L84">        return hotels;</span>
+    }
+
+    private static String cleanPrice(String price) {
+<span class="nc" id="L88">        char[] arr = price.toCharArray();</span>
+<span class="nc" id="L89">        StringBuilder result = new StringBuilder();</span>
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        for (char c : arr) {</span>
+<span class="nc bnc" id="L92" title="All 6 branches missed.">            if (c != '$' &amp; c != '.') {</span>
+<span class="nc" id="L93">                result.append(c);</span>
+            }
+        }
+<span class="nc" id="L96">        return result.toString();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

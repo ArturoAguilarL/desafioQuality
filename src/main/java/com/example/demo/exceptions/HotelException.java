@@ -7,8 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Setter
 @Getter
-public abstract class MeliException extends Exception {
+public abstract class HotelException extends Exception {
     private ErrorDTO error;
     private HttpStatus status;
-
 }

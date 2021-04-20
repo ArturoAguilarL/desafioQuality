@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HotelController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.example.demo.controllers</a> &gt; <span class="el_source">HotelController.java</span></div><h1>HotelController.java</h1><pre class="source lang-java linenums">package com.example.demo.controllers;
+
+
+import com.example.demo.dto.*;
+import com.example.demo.exceptions.*;
+import com.example.demo.services.HotelService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+<span class="fc" id="L15">public class HotelController {</span>
+
+    @Autowired
+    HotelService hotelService;
+
+    @GetMapping(value = &quot;api/v1/hotels&quot;)
+    public List&lt;HotelDTO&gt; getHotels(@RequestParam(value = &quot;dateFrom&quot;, required = false) String dateFrom,
+                                    @RequestParam(value = &quot;dateTo&quot;, required = false) String dateTo,
+                                    @RequestParam(value = &quot;destination&quot;, required = false) String destination) throws DestinationNoExistsException, CheckInGreaterThanCheckOutException, CheckOutBeforeCheckInException, DateFormatInvalidException {
+<span class="nc" id="L24">        return hotelService.getHotels(dateFrom, dateTo, destination);</span>
+    }
+
+    @PostMapping(value = &quot;api/v1/booking&quot;)
+    public HotelResponsePayloadDTO booking(@RequestBody HotelPayloadDTO payload){
+<span class="nc" id="L29">        return hotelService.booking(payload);</span>
+    }
+
+
+    @ExceptionHandler(HotelException.class)
+    public ResponseEntity&lt;ErrorDTO&gt; handleException(HotelException exception){
+<span class="nc" id="L35">        return new ResponseEntity&lt;&gt;(exception.getError(),exception.getStatus());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
