@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HotelResponsePayloadDTO {
+public class HotelResponsePayloadDTO{
     private String userName;
     private Double amount;
     private Double interest;

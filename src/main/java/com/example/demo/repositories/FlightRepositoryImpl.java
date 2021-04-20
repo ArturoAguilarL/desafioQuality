@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,9 +28,24 @@ public class FlightRepositoryImpl implements FlightRepository{
 
 
     @Override
-    public List<FlightDTO> getFlights() {
+    public List<FlightDTO> getAllFlights() {
         List<FlightDTO> flightsCopy = new ArrayList<>(this.flights);
         return flightsCopy;
+    }
+
+    @Override
+    public void destinationExists(String destination) {
+
+    }
+
+    @Override
+    public void originExists(String origin) {
+
+    }
+
+    @Override
+    public List<FlightDTO> getFlights(Date dateF, Date dateT, String origin, String destination) {
+        return null;
     }
 
     private List<FlightDTO> parseFlightsCSV() {

@@ -6,8 +6,12 @@ import com.example.demo.repositories.HotelRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,12 +23,16 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@RunWith(MockitoJUnitRunner.class)
+@EnableWebMvc
 public class HotelServiceTest {
+
+    @InjectMocks
+    private HotelServiceImpl hotelService;
 
     @Mock
     HotelRepositoryImpl hotelRepository;
 
-    HotelServiceImpl hotelService;
 
     @BeforeEach
     void setUp(){
